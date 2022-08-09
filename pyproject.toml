@@ -1,0 +1,78 @@
+[tool.poetry]
+name = "paperless-ngx"
+version = "1.8.0"
+description = "Paperless-ngx is a document management system that transforms your physical documents into a searchable online archive"
+authors = ["paperless-ngx team <hello@paperless-ngx.com>"]
+
+[[tool.poetry.source]]
+name = "piwheels"
+url = "https://www.piwheels.org/simple"
+secondary = true
+
+[tool.poetry.dependencies]
+python = "3.8+"
+dateparser = "~1.1"
+django = "~4.0"
+django-cors-headers = "*"
+django-extensions = "*"
+django-filter = "~22.1"
+django-q = {branch = "paperless-main", git = "https://github.com/paperless-ngx/django-q.git", extras = ["redis"]}
+djangorestframework = "~3.13"
+filelock = "*"
+fuzzywuzzy = {extras = ["speedup"], version = "*"}
+gunicorn = "*"
+imap-tools = "*"
+langdetect = "*"
+pathvalidate = "*"
+pillow = "~9.2"
+pikepdf = "~5.4"
+python-gnupg = "*"
+python-dotenv = "*"
+python-dateutil = "*"
+python-magic = "*"
+psycopg2 = "*"
+redis = "*"
+scikit-learn="~1.1"
+scipy = "~1.8"
+whitenoise = "~6.2"
+watchdog = "~2.1"
+whoosh="~2.7"
+inotifyrecursive = "~0.3"
+ocrmypdf = "~13"
+tqdm = "*"
+tika = "*"
+# TODO: This will sadly also install daphne+dependencies,
+#  which an ASGI server we don't need. Adds about 15MB image size.
+channels = "~3.0"
+channels-redis = "*"
+uvicorn = {extras = ["standard"], version = "*"}
+concurrent-log-handler = "*"
+"pdfminer.six" = "*"
+"backports.zoneinfo" = {version = "*", markers = "python_version < '3.9'"}
+"importlib-resources" = {version = "*", markers = "python_version < '3.9'"}
+zipp = {version = "*", markers = "python_version < '3.9'"}
+pyzbar = "*"
+pdf2image = "*"
+
+
+[tool.poetry.dev-dependencies]
+coveralls = "*"
+factory-boy = "*"
+pycodestyle = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-django = "*"
+pytest-env = "*"
+pytest-sugar = "*"
+pytest-xdist = "*"
+sphinx = "~5"
+sphinx_rtd_theme = "*"
+tox = "*"
+black = "*"
+pre-commit = "*"
+sphinx-autobuild = "*"
+myst-parser = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
