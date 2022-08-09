@@ -33,14 +33,10 @@ def _main():
         help="The name of the package to generate JSON for",
     )
 
-    PIPFILE_LOCK_PATH: Final[Path] = Path("Pipfile.lock")
     BUILD_CONFIG_PATH: Final[Path] = Path(".build-config.json")
 
     # Read the main config file
     build_json: Final = json.loads(BUILD_CONFIG_PATH.read_text())
-
-    # Read Pipfile.lock file
-    pipfile_data: Final = json.loads(PIPFILE_LOCK_PATH.read_text())
 
     args: Final = parser.parse_args()
 
@@ -52,17 +48,7 @@ def _main():
     version = None
     extra_config = {}
 
-    if args.package in pipfile_data["default"]:
-        # Read the version from Pipfile.lock
-        pkg_data = pipfile_data["default"][args.package]
-        pkg_version = pkg_data["version"].split("==")[-1]
-        version = pkg_version
-
-        # Any extra/special values needed
-        if args.package == "pikepdf":
-            extra_config["qpdf_version"] = build_json["qpdf"]["version"]
-
-    elif args.package in build_json:
+    if args.package in build_json:
         version = build_json[args.package]["version"]
 
     else:

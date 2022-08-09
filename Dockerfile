@@ -6,13 +6,9 @@
 
 ARG JBIG2ENC_VERSION
 ARG QPDF_VERSION
-ARG PIKEPDF_VERSION
-ARG PSYCOPG2_VERSION
 
 FROM ghcr.io/paperless-ngx/paperless-ngx/builder/jbig2enc:${JBIG2ENC_VERSION} as jbig2enc-builder
 FROM ghcr.io/paperless-ngx/paperless-ngx/builder/qpdf:${QPDF_VERSION} as qpdf-builder
-FROM ghcr.io/paperless-ngx/paperless-ngx/builder/pikepdf:${PIKEPDF_VERSION} as pikepdf-builder
-FROM ghcr.io/paperless-ngx/paperless-ngx/builder/psycopg2:${PSYCOPG2_VERSION} as psycopg2-builder
 
 FROM --platform=$BUILDPLATFORM node:16-bullseye-slim AS compile-frontend
 
@@ -163,17 +159,7 @@ RUN --mount=type=bind,from=qpdf-builder,target=/qpdf \
   set -eux \
   && echo "Installing qpdf" \
     && apt-get install --yes --no-install-recommends /qpdf/usr/src/qpdf/libqpdf28_*.deb \
-    && apt-get install --yes --no-install-recommends /qpdf/usr/src/qpdf/qpdf_*.deb \
-  && echo "Installing pikepdf and dependencies" \
-    && python3 -m pip install --no-cache-dir /pikepdf/usr/src/wheels/pyparsing*.whl \
-    && python3 -m pip install --no-cache-dir /pikepdf/usr/src/wheels/packaging*.whl \
-    && python3 -m pip install --no-cache-dir /pikepdf/usr/src/wheels/lxml*.whl \
-    && python3 -m pip install --no-cache-dir /pikepdf/usr/src/wheels/Pillow*.whl \
-    && python3 -m pip install --no-cache-dir /pikepdf/usr/src/wheels/pikepdf*.whl \
-    && python3 -m pip list \
-  && echo "Installing psycopg2" \
-    && python3 -m pip install --no-cache-dir /psycopg2/usr/src/wheels/psycopg2*.whl \
-    && python3 -m pip list
+    && apt-get install --yes --no-install-recommends /qpdf/usr/src/qpdf/qpdf_*.deb
 
 WORKDIR /usr/src/paperless/src/
 
@@ -201,7 +187,11 @@ RUN set -eux \
   && echo "Installing Python requirements" \
     # poetry tries to be too fancy and prints so much junk
     && PATH="${POETRY_HOME}/bin:${PATH}" poetry export --format requirements.txt --output requirements.txt \
-    && python3 -m pip install --default-timeout=1000 --no-cache-dir --requirement requirements.txt \
+    && python3 -m pip install \
+      --default-timeout=1000 \
+      --no-cache-dir \
+      --find-links https://stumpylog.github.io/library/ \
+      --requirement requirements.txt \
     && rm requirements.txt \
   && echo "Cleaning up image" \
     && apt-get -y purge ${BUILD_PACKAGES} \
