@@ -6,3 +6,7 @@ ignored:
   - DL3013
   # https://github.com/hadolint/hadolint/wiki/DL3003
   - DL3003
+  # https://github.com/hadolint/hadolint/wiki/DL4006
+  # Justification: pipe is used to install poetry, which would fail
+  # very fast if it didn't work
+  - DL4006

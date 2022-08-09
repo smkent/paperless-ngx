@@ -56,7 +56,7 @@ Initial setup and first start
 After you forked and cloned the code from github you need to perform a first-time setup.
 To do the setup you need to perform the steps from the following chapters in a certain order:
 
-1.  Install prerequisites + pipenv as mentioned in :ref:`Bare metal route <setup-bare_metal>`
+1.  Install prerequisites + poetry as mentioned in :ref:`Bare metal route <setup-bare_metal>`
 2.  Copy ``paperless.conf.example`` to ``paperless.conf`` and enable debug mode.
 3.  Install the Angular CLI interface:
 
@@ -64,7 +64,7 @@ To do the setup you need to perform the steps from the following chapters in a c
 
         $ npm install -g @angular/cli
 
-4.  Install pre-commit
+4.  Install pre-commit hooks
 
     .. code:: shell-session
 
@@ -90,7 +90,7 @@ To do the setup you need to perform the steps from the following chapters in a c
 
     .. code:: shell-session
 
-        pipenv install --dev
+        poetry install --dev
 
   * Make sure you're using python 3.9.x or lower. Otherwise you might get issues with building dependencies. You can use `pyenv <https://github.com/pyenv/pyenv>`_ to install a specific python version.
 
@@ -319,14 +319,14 @@ this is how you do it:
     .. code:: shell-session
 
         $ cd /path/to/paperless
-        $ pipenv install --dev
+        $ poetry install
 
 2.  Build the documentation
 
     .. code:: shell-session
 
         $ cd /path/to/paperless/docs
-        $ pipenv run make clean html
+        $ poetry run make clean html
 
 This will build the HTML documentation, and put the resulting files in the ``_build/html``
 directory.

@@ -179,7 +179,7 @@ WORKDIR /usr/src/paperless/src/
 
 # Python dependencies
 # Change pretty frequently
-COPY Pipfile* ./
+COPY poetry.lock ./
 
 # Packages needed only for building a few quick Python
 # dependencies
@@ -188,29 +188,27 @@ ARG BUILD_PACKAGES="\
   git \
   python3-dev"
 
+ENV POETRY_HOME="/opt/poetry" \
+    POETRY_VERSION="1.1.14"
+
 RUN set -eux \
   && echo "Installing build system packages" \
     && apt-get update \
     && apt-get install --yes --quiet --no-install-recommends ${BUILD_PACKAGES} \
     && python3 -m pip install --no-cache-dir --upgrade wheel \
-  && echo "Installing pipenv" \
-    && python3 -m pip install --no-cache-dir --upgrade pipenv \
+  && echo "Installing poetry" \
+    && curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python3 \
   && echo "Installing Python requirements" \
-    # pipenv tries to be too fancy and prints so much junk
-    && pipenv requirements > requirements.txt \
+    # poetry tries to be too fancy and prints so much junk
+    && poetry export --format requirements.txt --output requirements.txt \
     && python3 -m pip install --default-timeout=1000 --no-cache-dir --requirement requirements.txt \
     && rm requirements.txt \
   && echo "Cleaning up image" \
     && apt-get -y purge ${BUILD_PACKAGES} \
     && apt-get -y autoremove --purge \
     && apt-get clean --yes \
-    # Remove pipenv and its unique packages
-    && python3 -m pip uninstall --yes \
-      pipenv \
-      distlib \
-      platformdirs \
-      virtualenv \
-      virtualenv-clone \
+    # Remove poetry and its unique packages
+    && rm -rf ${POETRY_HOME} \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/* \

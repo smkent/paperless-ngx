@@ -42,24 +42,24 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       -
-        name: Install pipenv
-        run: pipx install pipenv
+        name: Install poetry
+        run: pipx install poetry
       -
         name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.9
-          cache: "pipenv"
-          cache-dependency-path: 'Pipfile.lock'
+          cache: "poetry"
+          cache-dependency-path: 'poetry.lock'
       -
         name: Install dependencies
         run: |
-          pipenv sync --dev
+          poetry install --remove-untracked
       -
         name: Make documentation
         run: |
           cd docs/
-          pipenv run make html
+          poetry run make html
       -
         name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -83,15 +83,15 @@ jobs:
         with:
           fetch-depth: 2
       -
-        name: Install pipenv
-        run: pipx install pipenv
+        name: Install poetry
+        run: pipx install poetry
       -
         name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "${{ matrix.python-version }}"
-          cache: "pipenv"
-          cache-dependency-path: 'Pipfile.lock'
+          cache: "poetry"
+          cache-dependency-path: 'poetry.lock'
       -
         name: Install system dependencies
         run: |
@@ -100,12 +100,12 @@ jobs:
       -
         name: Install Python dependencies
         run: |
-          pipenv sync --dev
+          poetry install
       -
         name: Tests
         run: |
           cd src/
-          pipenv run pytest
+          poetry run pytest
       -
         name: Get changed files
         id: changed-files-specific
@@ -127,7 +127,7 @@ jobs:
         # https://github.com/coveralls-clients/coveralls-python/issues/251
         run: |
           cd src/
-          pipenv run coveralls --service=github
+          poetry run coveralls --service=github
 
   tests-frontend:
     name: "Tests Frontend"
@@ -339,21 +339,21 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       -
-        name: Install pipenv
+        name: Install poetry
         run: |
           pip3 install --upgrade pip setuptools wheel pipx
-          pipx install pipenv
+          pipx install poetry
       -
         name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.9
-          cache: "pipenv"
-          cache-dependency-path: 'Pipfile.lock'
+          cache: "poetry"
+          cache-dependency-path: 'poetry.lock'
       -
         name: Install Python dependencies
         run: |
-          pipenv sync --dev
+          poetry install
       -
         name: Install system dependencies
         run: |
@@ -374,17 +374,17 @@ jobs:
       -
         name: Generate requirements file
         run: |
-          pipenv requirements > requirements.txt
+          poetry export --format requirements.txt --output requirements.txt
       -
         name: Compile messages
         run: |
           cd src/
-          pipenv run python3 manage.py compilemessages
+          poetry run python3 manage.py compilemessages
       -
         name: Collect static files
         run: |
           cd src/
-          pipenv run python3 manage.py collectstatic --no-input
+          poetry run python3 manage.py collectstatic --no-input
       -
         name: Move files
         run: |
