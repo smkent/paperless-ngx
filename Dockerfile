@@ -200,7 +200,7 @@ RUN set -eux \
     && curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python3 \
   && echo "Installing Python requirements" \
     # poetry tries to be too fancy and prints so much junk
-    && poetry export --format requirements.txt --output requirements.txt \
+    && PATH="${POETRY_HOME}/bin:${PATH}" poetry export --format requirements.txt --output requirements.txt \
     && python3 -m pip install --default-timeout=1000 --no-cache-dir --requirement requirements.txt \
     && rm requirements.txt \
   && echo "Cleaning up image" \

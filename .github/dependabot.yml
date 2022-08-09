@@ -21,7 +21,7 @@ updates:
   # Enable version updates for Python
   - package-ecosystem: "pip"
     target-branch: "dev"
-    # Look for a `Pipfile` in the `root` directory
+    # Look for a `poetry.lock` in the `root` directory
     directory: "/"
     # Check for updates once a week
     schedule:

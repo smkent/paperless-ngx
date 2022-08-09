@@ -18,7 +18,7 @@ on:
       - "docker-builders/**"
       # Trigger if a package was updated
       - ".build-config.json"
-      - "Pipfile.lock"
+      - "poetry.lock"
       # Also trigger on workflow changes related to the library
       - ".github/workflows/installer-library.yml"
       - ".github/workflows/reusable-workflow-builder.yml"

@@ -391,7 +391,7 @@ jobs:
           mkdir dist
           mkdir dist/paperless-ngx
           mkdir dist/paperless-ngx/scripts
-          cp .dockerignore .env Dockerfile Pipfile Pipfile.lock requirements.txt LICENSE README.md dist/paperless-ngx/
+          cp .dockerignore .env Dockerfile pyproject.toml poetry.lock requirements.txt LICENSE README.md dist/paperless-ngx/
           cp paperless.conf.example dist/paperless-ngx/paperless.conf
           cp gunicorn.conf.py dist/paperless-ngx/gunicorn.conf.py
           cp -r docker/ dist/paperless-ngx/docker
