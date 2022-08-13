@@ -53,7 +53,7 @@ jobs:
       -
         name: Install Python libraries
         run: |
-          pip install tomllib
+          pip install toml
       -
         name: Setup qpdf image
         id: qpdf-setup
