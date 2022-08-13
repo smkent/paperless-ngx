@@ -6,9 +6,13 @@
 
 ARG JBIG2ENC_VERSION
 ARG QPDF_VERSION
+ARG PIKEPDF_VERSION
+ARG PSYCOPG2_VERSION
 
 FROM ghcr.io/paperless-ngx/paperless-ngx/builder/jbig2enc:${JBIG2ENC_VERSION} as jbig2enc-builder
 FROM ghcr.io/paperless-ngx/paperless-ngx/builder/qpdf:${QPDF_VERSION} as qpdf-builder
+FROM ghcr.io/paperless-ngx/paperless-ngx/builder/pikepdf:${PIKEPDF_VERSION} as pikepdf-builder
+FROM ghcr.io/paperless-ngx/paperless-ngx/builder/psycopg2:${PSYCOPG2_VERSION} as psycopg2-builder
 
 FROM --platform=$BUILDPLATFORM node:16-bullseye-slim AS compile-frontend
 
@@ -159,13 +163,23 @@ RUN --mount=type=bind,from=qpdf-builder,target=/qpdf \
   set -eux \
   && echo "Installing qpdf" \
     && apt-get install --yes --no-install-recommends /qpdf/usr/src/qpdf/libqpdf28_*.deb \
-    && apt-get install --yes --no-install-recommends /qpdf/usr/src/qpdf/qpdf_*.deb
+    && apt-get install --yes --no-install-recommends /qpdf/usr/src/qpdf/qpdf_*.deb \
+  && echo "Installing pikepdf and dependencies" \
+    && python3 -m pip install --no-cache-dir /pikepdf/usr/src/wheels/pyparsing*.whl \
+    && python3 -m pip install --no-cache-dir /pikepdf/usr/src/wheels/packaging*.whl \
+    && python3 -m pip install --no-cache-dir /pikepdf/usr/src/wheels/lxml*.whl \
+    && python3 -m pip install --no-cache-dir /pikepdf/usr/src/wheels/Pillow*.whl \
+    && python3 -m pip install --no-cache-dir /pikepdf/usr/src/wheels/pikepdf*.whl \
+    && python3 -m pip list \
+  && echo "Installing psycopg2" \
+    && python3 -m pip install --no-cache-dir /psycopg2/usr/src/wheels/psycopg2*.whl \
+    && python3 -m pip list
 
 WORKDIR /usr/src/paperless/src/
 
 # Python dependencies
 # Change pretty frequently
-COPY poetry.lock ./
+COPY poetry.lock pyproject.toml ./
 
 # Packages needed only for building a few quick Python
 # dependencies
@@ -174,6 +188,7 @@ ARG BUILD_PACKAGES="\
   git \
   python3-dev"
 
+# Sets the version and install location
 ENV POETRY_HOME="/opt/poetry" \
     POETRY_VERSION="1.1.14"
 
@@ -181,16 +196,19 @@ RUN set -eux \
   && echo "Installing build system packages" \
     && apt-get update \
     && apt-get install --yes --quiet --no-install-recommends ${BUILD_PACKAGES} \
-    && python3 -m pip install --no-cache-dir --upgrade wheel \
+    && python3 -m pip install --no-cache-dir --upgrade wheel pip \
   && echo "Installing poetry" \
-    && curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python3 \
+    && curl -sSL -O https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py \
+    && python3 get-poetry.py \
+    && rm get-poetry.py \
   && echo "Installing Python requirements" \
-    # poetry tries to be too fancy and prints so much junk
-    && PATH="${POETRY_HOME}/bin:${PATH}" poetry export --format requirements.txt --output requirements.txt \
+    # poetry cannot install to system, pip can
+    # No hashes as hashes cannot be verified for VCS install and it
+    # is all hashes or no hashes
+    && ${POETRY_HOME}/bin/poetry export --format requirements.txt --without-hashes --output requirements.txt \
     && python3 -m pip install \
       --default-timeout=1000 \
       --no-cache-dir \
-      --find-links https://stumpylog.github.io/library/ \
       --requirement requirements.txt \
     && rm requirements.txt \
   && echo "Cleaning up image" \

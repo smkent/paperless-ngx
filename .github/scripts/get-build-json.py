@@ -23,6 +23,12 @@ from typing import Final
 from common import get_cache_image_tag
 from common import get_image_tag
 
+try:
+    # Python 3.11 will include this
+    import tomllib as toml
+except ImportError:
+    import toml
+
 
 def _main():
     parser = argparse.ArgumentParser(
@@ -34,9 +40,17 @@ def _main():
     )
 
     BUILD_CONFIG_PATH: Final[Path] = Path(".build-config.json")
+    LOCK_FILE_PATH: Final[Path] = Path("poetry.lock")
 
     # Read the main config file
     build_json: Final = json.loads(BUILD_CONFIG_PATH.read_text())
+
+    # Read the poetry lock file
+    toml_data = toml.loads(LOCK_FILE_PATH.read_text())
+    lock_data = {}
+    for package_data in toml_data["package"]:
+        # Map a name to its data
+        lock_data[package_data["name"]] = package_data
 
     args: Final = parser.parse_args()
 
@@ -50,7 +64,12 @@ def _main():
 
     if args.package in build_json:
         version = build_json[args.package]["version"]
+    elif args.package in lock_data:
+        version = lock_data[args.package]["version"]
 
+        # Any extra/special values needed
+        if args.package == "pikepdf":
+            extra_config["qpdf_version"] = build_json["qpdf"]["version"]
     else:
         raise NotImplementedError(args.package)
 

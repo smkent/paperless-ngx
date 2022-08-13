@@ -51,6 +51,10 @@ jobs:
         with:
           python-version: "3.9"
       -
+        name: Install Python libraries
+        run: |
+          pip install tomllib
+      -
         name: Setup qpdf image
         id: qpdf-setup
         run: |
