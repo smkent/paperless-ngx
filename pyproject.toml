@@ -7,10 +7,10 @@ authors = ["paperless-ngx team <hello@paperless-ngx.com>"]
 [[tool.poetry.source]]
 name = "piwheels"
 url = "https://www.piwheels.org/simple"
-secondary = true
 
 [tool.poetry.dependencies]
-python = ">=3.8, <4"
+# <3.11 required for scipy currently
+python = ">=3.8, <3.11"
 
 dateparser = "~1.1"
 django = "~4.0"
@@ -49,9 +49,6 @@ channels-redis = "*"
 uvicorn = {extras = ["standard"], version = "*"}
 concurrent-log-handler = "*"
 "pdfminer.six" = "*"
-"backports.zoneinfo" = {version = "*", markers = "python_version < '3.9'"}
-"importlib-resources" = {version = "*", markers = "python_version < '3.9'"}
-zipp = {version = "*", markers = "python_version < '3.9'"}
 pyzbar = "*"
 pdf2image = "*"
 
