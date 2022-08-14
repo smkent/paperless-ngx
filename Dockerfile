@@ -186,6 +186,7 @@ COPY poetry.lock pyproject.toml ./
 ARG BUILD_PACKAGES="\
   build-essential \
   git \
+  libffi-dev \
   python3-dev"
 
 # Sets the version and install location
