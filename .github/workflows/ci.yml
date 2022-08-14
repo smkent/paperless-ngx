@@ -84,7 +84,9 @@ jobs:
           fetch-depth: 2
       -
         name: Install poetry
-        run: pipx install poetry
+        run: |
+          pipx install poetry
+          poetry --version
       -
         name: Set up Python
         uses: actions/setup-python@v4
@@ -100,7 +102,11 @@ jobs:
       -
         name: Install Python dependencies
         run: |
-          poetry install
+          poetry install --no-interaction
+      -
+        name: List Python dependencies
+        run: |
+          poetry run pip list
       -
         name: Tests
         run: |
