@@ -55,6 +55,7 @@ zipp = {version = "*", markers = "python_version < '3.9'"}
 pyzbar = "*"
 mysqlclient = "*"
 setproctitle = "*"
+nltk = "*"
 
 [dev-packages]
 coveralls = "*"
