@@ -923,3 +923,12 @@ PAPERLESS_ENABLE_UPDATE_CHECK=<bool>
     In either case, no tracking data is collected by the app in any way.
 
     Defaults to none, which disables the feature.
+
+Machine Learning
+###############
+
+PAPERLESS_ENABLE_NLTK=<bool>
+    Enable or disable the usage of NLTK during machine learning processing.  This
+    feature provides more advanced language processing for improved automatic matching.
+
+    Defaults to true, which enables the advanced processing.
